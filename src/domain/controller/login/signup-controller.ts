@@ -1,14 +1,26 @@
-export class SignupController{
+import { HttpResponse } from "./types/http-response";
 
-    handler = (requestData: any) => {
-        if(requestData.body.name === undefined){
-            return {
-                statusCode: 400
+export class SignupController{
+    handler = ({ body }: any): HttpResponse => {
+        const required = ['name', 'email', 'password', 'confirmation'];
+        for (const field of required){
+            if(!body[field]){
+                return {
+                    statusCode: 400,
+                    message: `Parameter '${field}' is required`
+                }
             }
         }
-        return {
-            statusCode: 200
+
+        if(body.confirmation !== body.password){
+            return {
+                statusCode: 400,
+                message: `Parameter 'confirmation' is invalid`
+            }
         }
 
+        return {
+            statusCode: 200            
+        }
     }
 }
