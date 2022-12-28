@@ -1,11 +1,12 @@
 import { EmailValidator } from "./helper/email-validator";
-import { BadRequest } from "./types/http-error";
-import { HttpRequest, HttpResponse } from "./types/http-response";
+import { BadRequest } from "./helper/http-error";
+import { Controller } from "./interface/Controller";
+import { HttpRequest, HttpResponse } from "./types";
 
-export class SignupController{
+export class SignupController implements Controller{
     constructor(private readonly emailValidator: EmailValidator){}
 
-    handler = (httpRequest: HttpRequest): HttpResponse => {
+    handle = (httpRequest: HttpRequest): HttpResponse => {
         const { body } = httpRequest;
         const required = ['name', 'email', 'password', 'confirmation'];
         for (const field of required){
