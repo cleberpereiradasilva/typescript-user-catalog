@@ -1,5 +1,5 @@
-import { BadRequest } from "./helper";
-import { Controller, EmailValidator } from "./interface";
+import { BadRequest } from "../helper/error";
+import { Controller, EmailValidator } from "../helper/interface";
 import { SignupController } from "./signup-controller";
 
 type SutType = {

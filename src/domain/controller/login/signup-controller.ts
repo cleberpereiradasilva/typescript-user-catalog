@@ -1,6 +1,6 @@
-import { BadRequest } from "./helper/http-error";
-import { Controller, EmailValidator } from "./interface";
-import { HttpRequest, HttpResponse } from "./types";
+import { BadRequest } from "../helper/error/http-error";
+import { Controller, EmailValidator } from "../helper/interface";
+import { HttpRequest, HttpResponse } from "../helper/types";
 
 export class SignupController implements Controller{
     constructor(private readonly emailValidator: EmailValidator){}
