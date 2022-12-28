@@ -1,5 +1,6 @@
 import { EmailValidator } from "./helper/email-validator";
 import { SignupController } from "./signup-controller";
+import { BadRequest } from "./types/http-error";
 
 type SutType = {
     emailValidatorMock: EmailValidator;
@@ -48,7 +49,7 @@ describe('Test signup Controller', () => {
         }
         const response = sutSignupController.handler(requestData);
         expect(response.statusCode).toBe(400);
-        expect(response.message).toBe(`Parameter 'name' is required`)
+        expect(response).toEqual(BadRequest(`Parameter 'name' is required`))
     });
 
     it('Should return status 400 when email is not provided', () => {
@@ -62,7 +63,7 @@ describe('Test signup Controller', () => {
         }
         const response = sutSignupController.handler(requestData);
         expect(response.statusCode).toBe(400);
-        expect(response.message).toBe(`Parameter 'email' is required`)
+        expect(response).toEqual(BadRequest(`Parameter 'email' is required`))
     });
 
     it('Should return status 400 when password is not provided', () => {
@@ -76,7 +77,7 @@ describe('Test signup Controller', () => {
         }
         const response = sutSignupController.handler(requestData);
         expect(response.statusCode).toBe(400);
-        expect(response.message).toBe(`Parameter 'password' is required`)
+        expect(response).toEqual(BadRequest(`Parameter 'password' is required`))
     });
 
     it('Should return status 400 when confirmation is not provided', () => {
@@ -90,7 +91,7 @@ describe('Test signup Controller', () => {
         }
         const response = sutSignupController.handler(requestData);
         expect(response.statusCode).toBe(400);
-        expect(response.message).toBe(`Parameter 'confirmation' is required`)
+        expect(response).toEqual(BadRequest(`Parameter 'confirmation' is required`))
     });
 
     it('Should return status 400 when confirmation is diferent to password', () => {
@@ -105,7 +106,7 @@ describe('Test signup Controller', () => {
         }
         const response = sutSignupController.handler(requestData);
         expect(response.statusCode).toBe(400);
-        expect(response.message).toBe(`Parameter 'confirmation' is invalid`)
+        expect(response).toEqual(BadRequest(`Parameter 'confirmation' is invalid`))
     });
 
 
@@ -123,7 +124,7 @@ describe('Test signup Controller', () => {
         }
         const response = sutSignupController.handler(requestData);
         expect(response.statusCode).toBe(400);
-        expect(response.message).toBe(`Parameter 'email' is invalid`)
+        expect(response).toEqual(BadRequest(`Parameter 'email' is invalid`))
     });
 
     
