@@ -1,6 +1,5 @@
-import { EmailValidator } from "./helper/email-validator";
 import { BadRequest } from "./helper/http-error";
-import { Controller } from "./interface/Controller";
+import { Controller, EmailValidator } from "./interface";
 import { HttpRequest, HttpResponse } from "./types";
 
 export class SignupController implements Controller{

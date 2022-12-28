@@ -1,22 +1,23 @@
-import { EmailValidator, BadRequest } from "./helper";
+import { BadRequest } from "./helper";
+import { Controller, EmailValidator } from "./interface";
 import { SignupController } from "./signup-controller";
 
 type SutType = {
-    emailValidatorMock: EmailValidator;
-    sutSignupController: SignupController;
+    emailValidatorStub: EmailValidator;
+    sutSignupController: Controller;
 }
 
 const makeSutSigunupController = (): SutType => {
-    class EmailValidatorMock implements EmailValidator{
+    class EmailValidatorStub implements EmailValidator{
         isValid(email: string): boolean {
             return true
         }
     }
-    const emailValidatorMock = new EmailValidatorMock();
-    const sutSignupController = new SignupController(emailValidatorMock)
+    const emailValidatorStub = new EmailValidatorStub();
+    const sutSignupController = new SignupController(emailValidatorStub)
 
     return {
-        emailValidatorMock, 
+        emailValidatorStub, 
         sutSignupController
     }
 }
@@ -110,8 +111,8 @@ describe('Test signup Controller', () => {
 
 
     it('Should return status 400 when email is invalid', () => {
-        const { sutSignupController, emailValidatorMock } = makeSutSigunupController();
-        jest.spyOn(emailValidatorMock, 'isValid').mockImplementationOnce(() => false)
+        const { sutSignupController, emailValidatorStub } = makeSutSigunupController();
+        jest.spyOn(emailValidatorStub, 'isValid').mockImplementationOnce(() => false)
 
         const requestData: any = {
             body: {
