@@ -1,22 +1,37 @@
 import { AccountData } from "../../../domain/usecase/account/type";
+import { AccountModel } from "../../../domain/usecase/model";
 import { DbAddAccount } from "./db-add-account";
-import { Encrypter } from "./protocols/encrypter";
+import { Encrypter, AddAccountRepository } from "./protocols";
 
-type StutType = {
+type SutType = {
     encrypterStub: Encrypter
     sutDbAddAccount: DbAddAccount
+    addAccountRepositoryStub: AddAccountRepository
 }
 
-const makeSut = (): StutType => {
+const makeSut = (): SutType => {
     class EncrypterStub implements Encrypter{
         encrypt = (value: string): Promise<string> => Promise.resolve('encrypted_password')
     }
+
+    class AddAccountRepositoryStub implements AddAccountRepository{
+        add = (account: AccountData): Promise<AccountModel> => Promise.resolve({
+            id: 1,
+            uuid: 'valid_uuid',
+            name: 'valid_name',
+            email: 'valid_email',
+            password: 'encrypted_password'
+        })
+    }
+
+    const addAccountRepositoryStub = new AddAccountRepositoryStub()
     const encrypterStub = new EncrypterStub();
-    const sutDbAddAccount = new DbAddAccount(encrypterStub);
+    const sutDbAddAccount = new DbAddAccount(encrypterStub, addAccountRepositoryStub);
 
     return {
         encrypterStub,
-        sutDbAddAccount
+        sutDbAddAccount,
+        addAccountRepositoryStub
     }
 }
 
@@ -49,4 +64,22 @@ describe('DbAddAccount', () => {
 
         expect(account).rejects.toThrow()
     });
+
+    it('Should call AddAccountRepository with correct values', async () => {
+        const {addAccountRepositoryStub, sutDbAddAccount} = makeSut()
+        const accountData: AccountData = {
+            name: 'valid_name',
+            email: 'valid_email',
+            password: 'valid_password'
+        }
+
+        const addSpyOn = jest.spyOn(addAccountRepositoryStub, 'add')
+        const newAccount = await sutDbAddAccount.add(accountData);
+
+        expect(addSpyOn).toBeCalledWith({...accountData, password: 'encrypted_password'})
+        expect(newAccount).toEqual({...accountData, password: 'encrypted_password', id: 1, uuid: 'valid_uuid'})
+            
+    });
+
+
 });
