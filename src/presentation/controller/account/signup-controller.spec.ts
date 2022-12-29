@@ -1,5 +1,6 @@
-import { AddAccount } from "../../../usecase/account";
-import { AccountData, AccountDTO } from "../../../usecase/account/type";
+import { AddAccount } from "../../../domain/usecase/account";
+import { AccountData } from "../../../domain/usecase/account/type";
+import { AccountModel } from "../../../domain/usecase/model";
 import { BadRequest } from "../helper/http-response";
 import { Controller, EmailValidator, PasswordValidator } from "../protocols/interface";
 import { SignupController } from "./signup-controller";
@@ -25,13 +26,14 @@ const makeSutSigunupController = (): SutType => {
     }
 
     class AddAcountStub implements AddAccount{
-        add(accountData: AccountData): AccountDTO {
-            return {
+        add(accountData: AccountData): Promise<AccountModel> {
+            return new Promise(resolve => resolve({
                 id: 1,
                 uuid: 'valid_uuid',
                 name: 'valid_name',
                 email: 'valid_email',
-            }
+                password: 'valid_password'
+            }))
         }
     }
 
@@ -54,7 +56,7 @@ const makeSutSigunupController = (): SutType => {
 
 
 describe('Test signup Controller', () => {
-    it('Should return status 200 when all data is provided', () => {
+    it('Should return status 200 when all data is provided', async () => {
         const { sutSignupController, addAcountStub } = makeSutSigunupController();
         const requestData: any = {
             body: {
@@ -64,14 +66,15 @@ describe('Test signup Controller', () => {
                 'confirmation': 'valid_password'
             }
         }
-        jest.spyOn(addAcountStub, 'add').mockImplementationOnce(() => ({
+        jest.spyOn(addAcountStub, 'add').mockImplementationOnce(() => new Promise(resolve => resolve({
             id: 1,
             uuid: 'valid_uuid',
             name: 'valid_name',
             email: 'valid_email',
-        }))
+            password: 'valid_password'
+        })))
 
-        const response = sutSignupController.handle(requestData);
+        const response = await sutSignupController.handle(requestData);
         expect(addAcountStub.add).toBeCalledWith({
             'name': 'valid_name',
             'email':'valid_email',
@@ -80,7 +83,7 @@ describe('Test signup Controller', () => {
         expect(response.statusCode).toBe(200)
     });
 
-    it('Should return status 500', () => {
+    it('Should return status 500 if account not created', async () => {
         const { sutSignupController, addAcountStub } = makeSutSigunupController();
         const requestData: any = {
             body: {
@@ -90,12 +93,29 @@ describe('Test signup Controller', () => {
                 'confirmation': 'valid_password'
             }
         }
-        jest.spyOn(addAcountStub, 'add').mockImplementationOnce(() => undefined)
-        const response = sutSignupController.handle(requestData);
+        jest.spyOn(addAcountStub, 'add').mockImplementationOnce(() => new Promise((resolve, reject) => reject(new Error())))
+
+        const response = await sutSignupController.handle(requestData);
+      
         expect(response.statusCode).toBe(500)
     });
 
-    it('Should return status 400 when name is not provided', () => {
+    it('Should return status 500', async () => {
+        const { sutSignupController, addAcountStub } = makeSutSigunupController();
+        const requestData: any = {
+            body: {
+                'name': 'valid_name',
+                'email':'valid_email',
+                'password': 'valid_password',
+                'confirmation': 'valid_password'
+            }
+        }
+        jest.spyOn(addAcountStub, 'add').mockImplementationOnce(() => { throw new Error() })
+        const response = await sutSignupController.handle(requestData);
+        expect(response.statusCode).toBe(500)
+    });
+
+    it('Should return status 400 when name is not provided', async () => {
         const { sutSignupController } = makeSutSigunupController();
         const requestData: any = {
             body: {
@@ -104,12 +124,12 @@ describe('Test signup Controller', () => {
                 'confirmation': 'valid_password'
             }
         }
-        const response = sutSignupController.handle(requestData);
+        const response = await sutSignupController.handle(requestData);
         expect(response.statusCode).toBe(400);
-        expect(response).toEqual(BadRequest(`Parameter 'name' is required`))
+        expect(response).toEqual(await BadRequest(`Parameter 'name' is required`))
     });
 
-    it('Should return status 400 when email is not provided', () => {
+    it('Should return status 400 when email is not provided', async () => {
         const { sutSignupController } = makeSutSigunupController();
         const requestData: any = {
             body: {
@@ -118,12 +138,12 @@ describe('Test signup Controller', () => {
                 'confirmation': 'valid_password'
             }
         }
-        const response = sutSignupController.handle(requestData);
+        const response = await sutSignupController.handle(requestData);
         expect(response.statusCode).toBe(400);
-        expect(response).toEqual(BadRequest(`Parameter 'email' is required`))
+        expect(response).toEqual(await BadRequest(`Parameter 'email' is required`))
     });
 
-    it('Should return status 400 when password is not provided', () => {
+    it('Should return status 400 when password is not provided', async () => {
         const { sutSignupController } = makeSutSigunupController();
         const requestData: any = {
             body: {
@@ -132,12 +152,12 @@ describe('Test signup Controller', () => {
                 'confirmation': 'valid_password'
             }
         }
-        const response = sutSignupController.handle(requestData);
+        const response = await sutSignupController.handle(requestData);
         expect(response.statusCode).toBe(400);
-        expect(response).toEqual(BadRequest(`Parameter 'password' is required`))
+        expect(response).toEqual(await BadRequest(`Parameter 'password' is required`))
     });
 
-    it('Should return status 400 when confirmation is not provided', () => {
+    it('Should return status 400 when confirmation is not provided', async () => {
         const { sutSignupController } = makeSutSigunupController();
         const requestData: any = {
             body: {
@@ -146,12 +166,12 @@ describe('Test signup Controller', () => {
                 'password': 'valid_password'
             }
         }
-        const response = sutSignupController.handle(requestData);
+        const response = await sutSignupController.handle(requestData);
         expect(response.statusCode).toBe(400);
-        expect(response).toEqual(BadRequest(`Parameter 'confirmation' is required`))
+        expect(response).toEqual(await BadRequest(`Parameter 'confirmation' is required`))
     });
 
-    it('Should return status 400 when confirmation is diferent to password', () => {
+    it('Should return status 400 when confirmation is diferent to password', async () => {
         const { sutSignupController } = makeSutSigunupController();
         const requestData: any = {
             body: {
@@ -161,44 +181,45 @@ describe('Test signup Controller', () => {
                 'confirmation': 'invvalid_password'
             }
         }
-        const response = sutSignupController.handle(requestData);
+        const response = await sutSignupController.handle(requestData);
         expect(response.statusCode).toBe(400);
-        expect(response).toEqual(BadRequest(`Parameter 'confirmation' is invalid`))
+        expect(response).toEqual(await BadRequest(`Parameter 'confirmation' is invalid`))
     });
 
 
-    it('Should return status 400 when email is invalid', () => {
+    it('Should return status 400 when email is invalid', async () => {
         const { sutSignupController, emailValidatorStub } = makeSutSigunupController();
         jest.spyOn(emailValidatorStub, 'isValid').mockImplementationOnce(() => false)
 
         const requestData: any = {
             body: {
                 'name':'valid_name',
-                'email':'invvalid_email',
+                'email':'invalid_email',
                 'password': 'valid_password',
                 'confirmation': 'valid_password'
             }
         }
-        const response = sutSignupController.handle(requestData);
+        const response = await sutSignupController.handle(requestData);
         expect(response.statusCode).toBe(400);
-        expect(response).toEqual(BadRequest(`Parameter 'email' is invalid`))
+        expect(emailValidatorStub.isValid).toBeCalledWith(requestData.body.email);
+        expect(response).toEqual(await BadRequest(`Parameter 'email' is invalid`))
     });
 
-    it('Should return status 400 when password is invalid', () => {
+    it('Should return status 400 when password is invalid', async () => {
         const { sutSignupController, passwordValidatorStub } = makeSutSigunupController();
         jest.spyOn(passwordValidatorStub, 'isValid').mockImplementationOnce(() => false)
 
         const requestData: any = {
             body: {
                 'name':'valid_name',
-                'email':'invvalid_email',
+                'email':'invalid_email',
                 'password': 'invalid_password',
                 'confirmation': 'invalid_password'
             }
         }
-        const response = sutSignupController.handle(requestData);
+        const response = await sutSignupController.handle(requestData);
         expect(response.statusCode).toBe(400);
-        expect(response).toEqual(BadRequest(`Parameter 'password' is invalid`))
+        expect(response).toEqual(await BadRequest(`Parameter 'password' is invalid`))
     });
 
 });

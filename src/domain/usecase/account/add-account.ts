@@ -1,4 +1,5 @@
-import { AccountData, AccountDTO } from "./type";
+import { AccountModel } from "../model";
+import { AccountData } from "./type";
 export interface AddAccount{
-    add: (accountData: AccountData) => AccountDTO | undefined
+    add: (accountData: AccountData) => Promise<AccountModel | null>
 }
