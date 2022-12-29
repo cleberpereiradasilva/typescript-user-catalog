@@ -6,8 +6,8 @@ import { Encrypter } from "./protocols/encrypter";
 export class DbAddAccount implements AddAccount{
     constructor(private readonly encrypter: Encrypter){}
 
-    add = (accountData: AccountData): Promise<AccountModel | null> => {
-        this.encrypter.encrypt(accountData.password);
-        return new  Promise(resolve => resolve(null));
+    add = async (accountData: AccountData): Promise<AccountModel | null> => {
+        await this.encrypter.encrypt(accountData.password);
+        return new Promise(resolve => resolve(null));
     }
 }

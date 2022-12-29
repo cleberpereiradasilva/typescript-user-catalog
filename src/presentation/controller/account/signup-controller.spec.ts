@@ -12,7 +12,7 @@ type SutType = {
     passwordValidatorStub: PasswordValidator;
 }
 
-const makeSutSigunupController = (): SutType => {
+const makeSut = (): SutType => {
     class EmailValidatorStub implements EmailValidator{
         isValid(email: string): boolean {
             return true
@@ -57,7 +57,7 @@ const makeSutSigunupController = (): SutType => {
 
 describe('Test signup Controller', () => {
     it('Should return status 200 when all data is provided', async () => {
-        const { sutSignupController, addAcountStub } = makeSutSigunupController();
+        const { sutSignupController, addAcountStub } = makeSut();
         const requestData: any = {
             body: {
                 'name': 'valid_name',
@@ -84,7 +84,7 @@ describe('Test signup Controller', () => {
     });
 
     it('Should return status 500 if account not created', async () => {
-        const { sutSignupController, addAcountStub } = makeSutSigunupController();
+        const { sutSignupController, addAcountStub } = makeSut();
         const requestData: any = {
             body: {
                 'name': 'valid_name',
@@ -101,7 +101,7 @@ describe('Test signup Controller', () => {
     });
 
     it('Should return status 500', async () => {
-        const { sutSignupController, addAcountStub } = makeSutSigunupController();
+        const { sutSignupController, addAcountStub } = makeSut();
         const requestData: any = {
             body: {
                 'name': 'valid_name',
@@ -116,7 +116,7 @@ describe('Test signup Controller', () => {
     });
 
     it('Should return status 400 when name is not provided', async () => {
-        const { sutSignupController } = makeSutSigunupController();
+        const { sutSignupController } = makeSut();
         const requestData: any = {
             body: {
                 'email':'valid_email',
@@ -130,7 +130,7 @@ describe('Test signup Controller', () => {
     });
 
     it('Should return status 400 when email is not provided', async () => {
-        const { sutSignupController } = makeSutSigunupController();
+        const { sutSignupController } = makeSut();
         const requestData: any = {
             body: {
                 'name':'valid_name',
@@ -144,7 +144,7 @@ describe('Test signup Controller', () => {
     });
 
     it('Should return status 400 when password is not provided', async () => {
-        const { sutSignupController } = makeSutSigunupController();
+        const { sutSignupController } = makeSut();
         const requestData: any = {
             body: {
                 'name':'valid_name',
@@ -158,7 +158,7 @@ describe('Test signup Controller', () => {
     });
 
     it('Should return status 400 when confirmation is not provided', async () => {
-        const { sutSignupController } = makeSutSigunupController();
+        const { sutSignupController } = makeSut();
         const requestData: any = {
             body: {
                 'name':'valid_name',
@@ -172,7 +172,7 @@ describe('Test signup Controller', () => {
     });
 
     it('Should return status 400 when confirmation is diferent to password', async () => {
-        const { sutSignupController } = makeSutSigunupController();
+        const { sutSignupController } = makeSut();
         const requestData: any = {
             body: {
                 'name':'valid_name',
@@ -188,7 +188,7 @@ describe('Test signup Controller', () => {
 
 
     it('Should return status 400 when email is invalid', async () => {
-        const { sutSignupController, emailValidatorStub } = makeSutSigunupController();
+        const { sutSignupController, emailValidatorStub } = makeSut();
         jest.spyOn(emailValidatorStub, 'isValid').mockImplementationOnce(() => false)
 
         const requestData: any = {
@@ -206,7 +206,7 @@ describe('Test signup Controller', () => {
     });
 
     it('Should return status 400 when password is invalid', async () => {
-        const { sutSignupController, passwordValidatorStub } = makeSutSigunupController();
+        const { sutSignupController, passwordValidatorStub } = makeSut();
         jest.spyOn(passwordValidatorStub, 'isValid').mockImplementationOnce(() => false)
 
         const requestData: any = {
