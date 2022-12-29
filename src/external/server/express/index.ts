@@ -1,11 +1,11 @@
 import express from 'express'
-import { bodyParser, contentTypeJson, cors } from './middleware';
+import { useMiddlewares } from './config/use-middlewares';
+import { useRoutes } from './config/use-routes';
 
 const app = express();
 
-app.use(bodyParser)
-app.use(cors)
-app.use(contentTypeJson)
+useMiddlewares(app)
+useRoutes(app)
 
 export default app
 
