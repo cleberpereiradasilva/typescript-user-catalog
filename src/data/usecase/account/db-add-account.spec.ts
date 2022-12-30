@@ -15,7 +15,7 @@ const makeSut = (): SutType => {
     }
 
     class AddAccountRepositoryStub implements AddAccountRepository{
-        add = (account: AccountData): Promise<AccountModel> => Promise.resolve({
+        insert = (account: AccountData): Promise<AccountModel> => Promise.resolve({
             id: 1,
             uuid: 'valid_uuid',
             name: 'valid_name',
@@ -73,7 +73,7 @@ describe('DbAddAccount', () => {
             password: 'valid_password'
         }
 
-        const addSpyOn = jest.spyOn(addAccountRepositoryStub, 'add')
+        const addSpyOn = jest.spyOn(addAccountRepositoryStub, 'insert')
         const newAccount = await sutDbAddAccount.add(accountData);
 
         expect(addSpyOn).toBeCalledWith({...accountData, password: 'encrypted_password'})
@@ -91,7 +91,7 @@ describe('DbAddAccount', () => {
             password: 'valid_password'
         }
 
-        jest.spyOn(addAccountRepositoryStub, 'add').mockImplementationOnce(() => new Promise((resolve, reject) => reject(new Error())))
+        jest.spyOn(addAccountRepositoryStub, 'insert').mockImplementationOnce(() => new Promise((resolve, reject) => reject(new Error())))
         const account = sutDbAddAccount.add(accountData);
 
         expect(account).rejects.toThrow()

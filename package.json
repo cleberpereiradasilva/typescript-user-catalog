@@ -33,6 +33,7 @@
     "fast-glob": "^3.2.12",
     "pg": "^8.8.0",
     "reflect-metadata": "^0.1.13",
-    "typeorm": "^0.3.11"
+    "typeorm": "^0.3.11",
+    "zod": "^3.20.2"
   }
 }

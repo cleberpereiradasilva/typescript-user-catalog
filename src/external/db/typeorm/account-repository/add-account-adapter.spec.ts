@@ -24,7 +24,7 @@ describe('AddAccount Repository', () => {
             password:  'valid_password', 
         }
 
-        const newAccount = await sutAddAccountAdapter.add(accountData);
+        const newAccount = await sutAddAccountAdapter.insert(accountData);
         expect(newAccount?.id).toBeTruthy()
         expect(newAccount?.uuid).toBeTruthy()               
         
@@ -41,7 +41,7 @@ describe('AddAccount Repository', () => {
             password:  'valid_password', 
         }
 
-        const newAccount = sutAddAccountAdapter.add(accountData);
+        const newAccount = sutAddAccountAdapter.insert(accountData);
         await expect(newAccount).rejects.toThrow()
         
     });
