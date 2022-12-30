@@ -1,6 +1,7 @@
 import { Express, Router } from 'express'
 import fg from 'fast-glob'
 
+
 export const useRoutes = (app: Express): void => {
     const route = Router()
     app.use('/api', route)
