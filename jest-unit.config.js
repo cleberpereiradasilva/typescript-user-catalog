@@ -2,7 +2,7 @@ module.exports = {
   coverageProvider: "v8",
   testMatch: [
     "**/__tests__/**/*.[jt]s?(x)",
-    "**/?(*.)+(spec|test).[tj]s?(x)"
+    "**/?(*.)+(spec).[tj]s?(x)"
   ],
 
   testPathIgnorePatterns: [

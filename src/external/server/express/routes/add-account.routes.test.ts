@@ -1,16 +1,29 @@
 import request from 'supertest'
+import { Request, Response } from "express";
 import app  from '../';
+import { Controller } from '../../../../presentation/controller/protocols/interface';
+import { HttpRequest, HttpResponse } from '../../../../presentation/controller/protocols/types';
+import { ResponseOk } from '../../../../presentation/controller/helper/http-response';
+class MakeSignupControllerStub implements Controller{
+    handle(httpRequest: HttpRequest): Promise<HttpResponse> {
+        return ResponseOk('')
+    }
+}
+
+const makeSignupControllerStub = new MakeSignupControllerStub()
+jest.mock('../../../../main/factories/signup.ts', () => ({
+    makeSignupController: () => makeSignupControllerStub
+}))
 
 describe('AddAccount route test', () => {
-    xit('should create a account using correct route', async () => {
-        
+    it('should create a account using correct route', async () => {
         await request(app)
             .post('/api/signup')           
             .send({
                 name: 'valid_name', 
                 email: 'valid_email',
                 password: 'valid_password',
-                confirmation: 'valid_password'
+                confirm: 'valid_password'
             })
             .expect(200)
     });
