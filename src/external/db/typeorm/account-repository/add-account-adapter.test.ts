@@ -14,6 +14,7 @@ describe('AddAccount Repository', () => {
     let connection: DataSource;
     beforeAll(async () => {
         connection = await AppDataSource.initialize()
+        await connection.getRepository(Account).clear()
     })
 
     afterAll(async () => {

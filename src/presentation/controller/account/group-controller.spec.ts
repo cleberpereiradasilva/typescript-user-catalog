@@ -22,7 +22,6 @@ const makeSut = (): SutType => {
     }
 
     const addGroupStub = new AddGroupStub();
-   
     const sutAddGroupController = new AddGroupController(
         addGroupStub
     )
