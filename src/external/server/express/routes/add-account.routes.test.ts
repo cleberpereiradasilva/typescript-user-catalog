@@ -1,5 +1,4 @@
 import request from 'supertest'
-import { Request, Response } from "express";
 import app  from '../';
 import { Controller } from '../../../../presentation/controller/protocols/interface';
 import { HttpRequest, HttpResponse } from '../../../../presentation/controller/protocols/types';

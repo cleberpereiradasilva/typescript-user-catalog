@@ -1,4 +1,5 @@
 import { AddGroup } from "../../../domain/usecase/account";
+import { GroupData } from "../../../domain/usecase/account/type";
 import { GroupModel } from "../../../domain/usecase/model";
 import { BadRequest } from "../helper/http-response";
 import { Controller } from "../protocols/interface";
@@ -12,7 +13,7 @@ type SutType = {
 const makeSut = (): SutType => {
 
     class AddGroupStub implements AddGroup{
-        add(group: string): Promise<GroupModel> {
+        add(groupData: GroupData): Promise<GroupModel> {
             return new Promise(resolve => resolve({
                 id: 1,
                 uuid: 'valid_uuid',
@@ -48,7 +49,7 @@ describe('Test account group Controller', () => {
         })))
 
         const response = await sutAddGroupController.handle(requestData);
-        expect(addGroupStub.add).toBeCalledWith('valid_description')
+        expect(addGroupStub.add).toBeCalledWith({'description': 'valid_description'})
         expect(response.statusCode).toBe(200)
     });
 
@@ -60,6 +61,20 @@ describe('Test account group Controller', () => {
             }
         }
         jest.spyOn(addGroupStub, 'add').mockImplementationOnce(() => new Promise((resolve, reject) => reject(new Error())))
+
+        const response = await sutAddGroupController.handle(requestData);
+      
+        expect(response.statusCode).toBe(500)
+    });
+
+    it('Should return status 500 duplicate key', async () => {
+        const { sutAddGroupController, addGroupStub } = makeSut();
+        const requestData: any = {
+            body: {
+                'description': 'valid_description',
+            }
+        }
+        jest.spyOn(addGroupStub, 'add').mockImplementationOnce(() => new Promise((resolve, reject) => reject(new Error('duplicate key'))))
 
         const response = await sutAddGroupController.handle(requestData);
       
