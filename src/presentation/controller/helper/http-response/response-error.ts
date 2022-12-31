@@ -5,7 +5,7 @@ export const BadRequest = (message: string): Promise<HttpResponse> => Promise.re
         body: message,
 })
 
-export const ServerError = (): Promise<HttpResponse> => Promise.resolve({
+export const ServerError = (message?: string): Promise<HttpResponse> => Promise.resolve({
         statusCode: 500, 
-        body: new Error('Internal server error')
+        body: message || new Error('Internal server error')
 })

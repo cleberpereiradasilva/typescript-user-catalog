@@ -1,4 +1,5 @@
 import { GroupModel } from "../model";
+import { GroupData } from "./type";
 export interface AddGroup{
-    add: (description: string) => Promise<GroupModel | null>
+    add: (groupData: GroupData) => Promise<GroupModel | null>
 }

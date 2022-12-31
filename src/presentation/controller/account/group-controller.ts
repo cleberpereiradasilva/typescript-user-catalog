@@ -23,10 +23,14 @@ export class AddGroupController implements Controller{
             }
 
             const {description} = body
-            const group = await this.addGroup.add(description)
+            const group = await this.addGroup.add({description})
 
             return ResponseOk(group)
         }catch(error){
+            const message = error as unknown as string
+            if(message.toString().indexOf('duplicate key') > 0){
+                return ServerError('Duplicate key')
+            }
             return ServerError()
         }
     }

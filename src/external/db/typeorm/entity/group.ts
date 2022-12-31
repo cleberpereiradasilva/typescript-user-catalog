@@ -9,7 +9,7 @@ export class Group {
     @Generated("uuid")
     uuid: string
 
-    @Column()
+    @Column({unique: true})
     description: string
 
 }
