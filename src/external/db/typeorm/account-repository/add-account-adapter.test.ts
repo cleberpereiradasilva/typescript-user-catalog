@@ -2,7 +2,9 @@ import { DataSource } from "typeorm";
 import { AccountData } from "../../../../domain/usecase/account/type";
 import { AppDataSource } from "../db/jest-pg-data-source";
 import { Account } from "../entity/account";
+import { Group } from "../entity/group";
 import { AddAccountAdapter } from "./add-account-adapter";
+import { AddGroupAdapter } from "./add-group-adapter";
 
 const accountData: AccountData = {
     name: 'valid_name',
@@ -14,19 +16,23 @@ describe('AddAccount Repository', () => {
     let connection: DataSource;
     beforeAll(async () => {
         connection = await AppDataSource.initialize()
-        await connection.getRepository(Account).clear()
+        await connection.getRepository(Account).delete({})
+        await connection.getRepository(Group).delete({})
     })
 
     afterAll(async () => {
-        await connection.getRepository(Account).clear()
         await connection.destroy()
     })
 
     it('should insert a account in database', async () => {
         const sutAddAccountAdapter = new AddAccountAdapter(connection)
+        const sutAddGroupAdapter = new AddGroupAdapter(connection)
+        const newGroup = await sutAddGroupAdapter.insert({description: 'group with valid namegroup'});
+        accountData.group = newGroup || undefined
         const newAccount = await sutAddAccountAdapter.insert(accountData);
         expect(newAccount?.id).toBeTruthy()
-        expect(newAccount?.uuid).toBeTruthy()               
+        expect(newAccount?.uuid).toBeTruthy()     
+        expect(newAccount?.groups[0].uuid).toBeTruthy()      
         
     });
 

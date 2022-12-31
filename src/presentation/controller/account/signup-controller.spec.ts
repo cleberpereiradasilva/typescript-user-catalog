@@ -32,7 +32,12 @@ const makeSut = (): SutType => {
                 uuid: 'valid_uuid',
                 name: 'valid_name',
                 email: 'valid_email',
-                password: 'valid_password'
+                password: 'valid_password',
+                groups: [{
+                    id: 1,
+                    uuid: 'valid_uuid',
+                    description: 'valid_description',
+                }]
             }))
         }
     }
@@ -71,7 +76,12 @@ describe('Test signup Controller', () => {
             uuid: 'valid_uuid',
             name: 'valid_name',
             email: 'valid_email',
-            password: 'valid_password'
+            password: 'valid_password',
+            groups: [{
+                id: 1,
+                uuid: 'valid_uuid',
+                description: 'valid_description',
+            }]
         })))
 
         const response = await sutSignupController.handle(requestData);

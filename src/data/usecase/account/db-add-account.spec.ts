@@ -20,7 +20,12 @@ const makeSut = (): SutType => {
             uuid: 'valid_uuid',
             name: 'valid_name',
             email: 'valid_email',
-            password: 'encrypted_password'
+            password: 'encrypted_password',
+            groups: [{
+                id: 1,
+                uuid: 'valid_uuid',
+                description: 'valid_description',
+            }]
         })
     }
 
@@ -77,7 +82,11 @@ describe('DbAddAccount', () => {
         const newAccount = await sutDbAddAccount.add(accountData);
 
         expect(addSpyOn).toBeCalledWith({...accountData, password: 'encrypted_password'})
-        expect(newAccount).toEqual({...accountData, password: 'encrypted_password', id: 1, uuid: 'valid_uuid'})
+        expect(newAccount).toEqual({...accountData, password: 'encrypted_password', id: 1, uuid: 'valid_uuid', groups: [{
+            id: 1,
+            uuid: 'valid_uuid',
+            description: 'valid_description',
+        }]})
             
     });
 
