@@ -4,6 +4,14 @@ import { HttpRequest, HttpResponse } from "../protocols/types";
 
 export class SigninController implements Controller{
     async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
-        return Promise.resolve(httpMissingParameter('email'))        
+        const { body } = httpRequest;
+        const required = ['email', 'password'];
+        for (const field of required){
+            if(!body[field]){
+                return httpMissingParameter(`${field}`)
+            }
+        } 
+        
+        return {statusCode: 400}
     }
 }
