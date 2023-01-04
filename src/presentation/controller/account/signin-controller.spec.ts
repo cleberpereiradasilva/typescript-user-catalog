@@ -1,3 +1,4 @@
+import { httpMissingParameter } from '../helper/http-response';
 import { HttpRequest } from '../protocols/types';
 import { SigninController } from './signin-controller'
 
@@ -11,5 +12,7 @@ describe('Signin Controller', () => {
         }
         const httpResponse = await sut.handle(httpRequest)
         expect(httpResponse.statusCode).toBe(400)
+        expect(httpResponse).toEqual(await httpMissingParameter('email'))
     });
+
 });

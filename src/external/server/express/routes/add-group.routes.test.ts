@@ -2,10 +2,10 @@ import request from 'supertest'
 import app  from '../';
 import { Controller } from '../../../../presentation/controller/protocols/interface';
 import { HttpRequest, HttpResponse } from '../../../../presentation/controller/protocols/types';
-import { ResponseOk } from '../../../../presentation/controller/helper/http-response';
+import { httpResponseOk } from '../../../../presentation/controller/helper/http-response';
 class MakeGroupControllerStub implements Controller{
     handle(httpRequest: HttpRequest): Promise<HttpResponse> {
-        return ResponseOk('')
+        return httpResponseOk('')
     }
 }
 

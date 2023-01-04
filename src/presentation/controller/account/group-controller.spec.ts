@@ -1,7 +1,7 @@
 import { AddGroup } from "../../../domain/usecase/account";
 import { GroupData } from "../../../domain/usecase/account/type";
 import { GroupModel } from "../../../domain/usecase/model";
-import { BadRequest } from "../helper/http-response";
+import { httpBadRequest, httpMissingParameter } from "../helper/http-response";
 import { Controller } from "../protocols/interface";
 import { AddGroupController } from "./group-controller";
 
@@ -91,7 +91,7 @@ describe('Test account group Controller', () => {
         }
         const response = await sutAddGroupController.handle(requestData);
         expect(response.statusCode).toBe(400);
-        expect(response).toEqual(await BadRequest(`Parameter 'description' is required`))
+        expect(response).toEqual(await httpMissingParameter('description'))
     });
    
 
@@ -104,7 +104,7 @@ describe('Test account group Controller', () => {
         }
         const response = await sutAddGroupController.handle(requestData);
         expect(response.statusCode).toBe(400);
-        expect(response).toEqual(await BadRequest(`Parameter 'description' is required with more than 10 chars`))
+        expect(response).toEqual(await httpBadRequest(`Parameter 'description' is required with more than 10 chars`))
     });
 
 });

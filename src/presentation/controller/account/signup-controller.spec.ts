@@ -1,7 +1,7 @@
 import { AddAccount } from "../../../domain/usecase/account";
 import { AccountData } from "../../../domain/usecase/account/type";
 import { AccountModel } from "../../../domain/usecase/model";
-import { BadRequest } from "../helper/http-response";
+import { httpBadRequest, httpMissingParameter } from "../helper/http-response";
 import { Controller, EmailValidator, PasswordValidator } from "../protocols/interface";
 import { SignupController } from "./signup-controller";
 
@@ -136,7 +136,7 @@ describe('Test signup Controller', () => {
         }
         const response = await sutSignupController.handle(requestData);
         expect(response.statusCode).toBe(400);
-        expect(response).toEqual(await BadRequest(`Parameter 'name' is required`))
+        expect(response).toEqual(await httpMissingParameter('name'))
     });
 
     it('Should return status 400 when email is not provided', async () => {
@@ -150,7 +150,7 @@ describe('Test signup Controller', () => {
         }
         const response = await sutSignupController.handle(requestData);
         expect(response.statusCode).toBe(400);
-        expect(response).toEqual(await BadRequest(`Parameter 'email' is required`))
+        expect(response).toEqual(await httpMissingParameter('email'))
     });
 
     it('Should return status 400 when password is not provided', async () => {
@@ -164,7 +164,7 @@ describe('Test signup Controller', () => {
         }
         const response = await sutSignupController.handle(requestData);
         expect(response.statusCode).toBe(400);
-        expect(response).toEqual(await BadRequest(`Parameter 'password' is required`))
+        expect(response).toEqual(await httpMissingParameter('password'))
     });
 
     it('Should return status 400 when confirmation is not provided', async () => {
@@ -178,7 +178,7 @@ describe('Test signup Controller', () => {
         }
         const response = await sutSignupController.handle(requestData);
         expect(response.statusCode).toBe(400);
-        expect(response).toEqual(await BadRequest(`Parameter 'confirmation' is required`))
+        expect(response).toEqual(await httpMissingParameter('confirmation'))
     });
 
     it('Should return status 400 when confirmation is diferent to password', async () => {
@@ -193,7 +193,7 @@ describe('Test signup Controller', () => {
         }
         const response = await sutSignupController.handle(requestData);
         expect(response.statusCode).toBe(400);
-        expect(response).toEqual(await BadRequest(`Parameter 'confirmation' is invalid`))
+        expect(response).toEqual(await httpBadRequest(`Parameter 'confirmation' is invalid`))
     });
 
 
@@ -212,7 +212,7 @@ describe('Test signup Controller', () => {
         const response = await sutSignupController.handle(requestData);
         expect(response.statusCode).toBe(400);
         expect(emailValidatorStub.isValid).toBeCalledWith(requestData.body.email);
-        expect(response).toEqual(await BadRequest(`Parameter 'email' is invalid`))
+        expect(response).toEqual(await httpBadRequest(`Parameter 'email' is invalid`))
     });
 
     it('Should return status 400 when password is invalid', async () => {
@@ -229,7 +229,7 @@ describe('Test signup Controller', () => {
         }
         const response = await sutSignupController.handle(requestData);
         expect(response.statusCode).toBe(400);
-        expect(response).toEqual(await BadRequest(`Parameter 'password' is invalid`))
+        expect(response).toEqual(await httpBadRequest(`Parameter 'password' is invalid`))
     });
 
 });

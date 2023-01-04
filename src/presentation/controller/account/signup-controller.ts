@@ -1,5 +1,5 @@
 import { AddAccount } from "../../../domain/usecase/account";
-import { BadRequest, ServerError, ResponseOk } from "../helper/http-response";
+import { httpBadRequest, httpServerError, httpResponseOk, httpMissingParameter } from "../helper/http-response";
 import { Controller, EmailValidator, PasswordValidator } from "../protocols/interface";
 import { HttpRequest, HttpResponse } from "../protocols/types";
 
@@ -16,29 +16,29 @@ export class SignupController implements Controller{
             const required = ['name', 'email', 'password', 'confirmation'];
             for (const field of required){
                 if(!body[field]){
-                    return BadRequest(`Parameter '${field}' is required`)
+                    return httpMissingParameter(`${field}`)
                 }
             }
 
             if(body.confirmation !== body.password){
-                return BadRequest(`Parameter 'confirmation' is invalid`)
+                return httpBadRequest(`Parameter 'confirmation' is invalid`)
             }
 
             if(!this.emailValidator.isValid(body.email)){
-                return BadRequest(`Parameter 'email' is invalid`)
+                return httpBadRequest(`Parameter 'email' is invalid`)
             }
 
             if(!this.passwordValidator.isValid(body.password)){
-                return BadRequest(`Parameter 'password' is invalid`)
+                return httpBadRequest(`Parameter 'password' is invalid`)
             }
 
             const {name, email, password} = body
 
             const account = await this.addAccount.add({name, email, password})
 
-            return ResponseOk(account)
+            return httpResponseOk(account)
         }catch(error){
-            return ServerError()
+            return httpServerError()
         }
     }
 }
