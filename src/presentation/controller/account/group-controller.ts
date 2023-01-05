@@ -28,10 +28,10 @@ export class AddGroupController implements Controller{
             return httpResponseOk(group)
         }catch(error){
             const message = error as unknown as string
-            if(message.toString().indexOf('duplicate key') > 0){
+            if(message?.toString().indexOf('duplicate key') > 0){
                 return httpServerError('Duplicate key')
             }
-            return httpServerError()
+            return httpServerError(error as unknown as Error)
         }
     }
 }

@@ -48,9 +48,9 @@ describe('Test account group Controller', () => {
             description: 'valid_description',
         })))
 
-        const response = await sutAddGroupController.handle(requestData);
+        const httpResponse = await sutAddGroupController.handle(requestData);
         expect(addGroupStub.add).toBeCalledWith({'description': 'valid_description'})
-        expect(response.statusCode).toBe(200)
+        expect(httpResponse.statusCode).toBe(200)
     });
 
     it('Should return status 500 if group not created', async () => {
@@ -60,11 +60,25 @@ describe('Test account group Controller', () => {
                 'description': 'valid_description',
             }
         }
-        jest.spyOn(addGroupStub, 'add').mockImplementationOnce(() => new Promise((resolve, reject) => reject(new Error())))
+        jest.spyOn(addGroupStub, 'add').mockImplementation(() => Promise.reject(new Error()))
 
-        const response = await sutAddGroupController.handle(requestData);
-      
-        expect(response.statusCode).toBe(500)
+        const httpResponse = await sutAddGroupController.handle(requestData);
+        expect(httpResponse.statusCode).toBe(500)
+        expect(httpResponse.body).toEqual(new Error())
+    });
+
+    it('Should return status 500 if group throw without Error', async () => {
+        const { sutAddGroupController, addGroupStub } = makeSut();
+        const requestData: any = {
+            body: {
+                'description': 'valid_description',
+            }
+        }
+        jest.spyOn(addGroupStub, 'add').mockImplementation(() => Promise.reject())
+
+        const httpResponse = await sutAddGroupController.handle(requestData);
+        expect(httpResponse.statusCode).toBe(500)
+        expect(httpResponse.body).toEqual(new Error('Internal Server Error'))
     });
 
     it('Should return status 500 duplicate key', async () => {
@@ -74,11 +88,12 @@ describe('Test account group Controller', () => {
                 'description': 'valid_description',
             }
         }
-        jest.spyOn(addGroupStub, 'add').mockImplementationOnce(() => new Promise((resolve, reject) => reject(new Error('duplicate key'))))
+        jest.spyOn(addGroupStub, 'add').mockImplementation(() => Promise.reject(new Error('duplicate key')))
 
-        const response = await sutAddGroupController.handle(requestData);
+        const httpResponse = await sutAddGroupController.handle(requestData);
       
-        expect(response.statusCode).toBe(500)
+        expect(httpResponse.statusCode).toBe(500)
+        
     });
 
 
@@ -89,9 +104,9 @@ describe('Test account group Controller', () => {
                 'descriptions': 'valid_description',
             }
         }
-        const response = await sutAddGroupController.handle(requestData);
-        expect(response.statusCode).toBe(400);
-        expect(response).toEqual(await httpMissingParameter('description'))
+        const httpResponse = await sutAddGroupController.handle(requestData);
+        expect(httpResponse.statusCode).toBe(400);
+        expect(httpResponse).toEqual(await httpMissingParameter('description'))
     });
    
 
@@ -102,9 +117,9 @@ describe('Test account group Controller', () => {
                 'description': 'v',
             }
         }
-        const response = await sutAddGroupController.handle(requestData);
-        expect(response.statusCode).toBe(400);
-        expect(response).toEqual(await httpBadRequest(`Parameter 'description' is required with more than 10 chars`))
+        const httpResponse = await sutAddGroupController.handle(requestData);
+        expect(httpResponse.statusCode).toBe(400);
+        expect(httpResponse).toEqual(await httpBadRequest(`Parameter 'description' is required with more than 10 chars`))
     });
 
 });

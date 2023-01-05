@@ -10,7 +10,7 @@ export const httpMissingParameter = (message: string): Promise<HttpResponse> => 
         body: `Parameter '${message}' is required`,
 })
 
-export const httpServerError = (message?: string): Promise<HttpResponse> => Promise.resolve({
+export const httpServerError = (message?: string | Error): Promise<HttpResponse> => Promise.resolve({
         statusCode: 500, 
-        body: message || new Error('Internal server error')
+        body: message || new Error('Internal Server Error')
 })
