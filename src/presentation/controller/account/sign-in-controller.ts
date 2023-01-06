@@ -1,5 +1,5 @@
 import { SignIn } from "../../../domain/usecase/account";
-import { httpMissingParameter, httpServerError } from "../helper/http-response";
+import { httpMissingParameter, httpResponseOk, httpServerError, httpUnAuthorized } from "../helper/http-response";
 import { Controller } from "../protocols/interface";
 import { HttpRequest, HttpResponse } from "../protocols/types";
 
@@ -15,16 +15,11 @@ export class SignInController implements Controller{
                     return httpMissingParameter(`${field}`)
                 }
             } 
-            const account = await this.signIn.login(body)
-            if(!account){
-                return {
-                    statusCode: 401, 
-                }
+            const token = await this.signIn.login(body)
+            if(!token){
+                return httpUnAuthorized()
             }
-            return {
-                statusCode: 200, 
-                body: account
-            }
+            return httpResponseOk(token)
         }catch(error){
             return httpServerError(error as unknown as Error)
         }
