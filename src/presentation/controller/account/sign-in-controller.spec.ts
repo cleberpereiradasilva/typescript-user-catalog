@@ -9,7 +9,7 @@ import { SignInController } from './sign-in-controller'
 
 const makeSut = () => {
     class SignInStub implements SignIn{
-        login = (signInData: SignInData): Promise<AccountModel | null> => {
+        login = (signInData: SignInData): Promise<string | null> => {
             return Promise.resolve(null)   
         }
     }
@@ -63,14 +63,7 @@ describe('signIn Controller', () => {
 
     it('Should get correct return from usecase', async () => {
         const {sutSignInController, signInStub} = makeSut()
-        jest.spyOn(signInStub, 'login').mockResolvedValue({
-            id: 1,
-            uuid: 'valid_uuid',
-            name: 'valid_name',
-            email: 'valid_email',
-            password: 'valid_password', 
-            groups: []
-        })
+        jest.spyOn(signInStub, 'login').mockResolvedValue('hashed_account')
         const httpRequest: HttpRequest = {
             body: {
                 email: 'vali_email@email.com',
@@ -78,7 +71,7 @@ describe('signIn Controller', () => {
             }
         }
         const httpResponse = await sutSignInController.handle(httpRequest)
-        expect(httpResponse.body.uuid).toBeTruthy()
+        expect(httpResponse.body).toBeTruthy()
         expect(httpResponse.statusCode).toBe(200)
     });
 
