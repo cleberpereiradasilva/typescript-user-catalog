@@ -33,4 +33,17 @@ describe('Bcrypter Adapter', () => {
         await expect(resultThrow).rejects.toThrow()
         
     });
+
+
+    it('should call compare with correct values', async () => {
+        const sutBcrypterAdapter = new BcrypterAdapter();
+        const compareSpy = jest.spyOn(bcrypt, 'compare');
+
+        await sutBcrypterAdapter.compare('valid_password', 'valid_hash');
+
+        expect(compareSpy).toBeCalledWith('valid_password', 'valid_hash')
+        
+    });
+
+
 });
