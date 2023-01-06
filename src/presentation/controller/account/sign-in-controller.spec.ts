@@ -82,7 +82,7 @@ describe('signIn Controller', () => {
         expect(httpResponse.statusCode).toBe(200)
     });
 
-    it('Should get status 404 when account not found', async () => {
+    it('Should get status 401 when account not found', async () => {
         const {sutSignInController, signInStub} = makeSut()
         jest.spyOn(signInStub, 'login').mockResolvedValue(null)
         const httpRequest: HttpRequest = {
@@ -92,7 +92,7 @@ describe('signIn Controller', () => {
             }
         }
         const httpResponse = await sutSignInController.handle(httpRequest)
-        expect(httpResponse.statusCode).toBe(404)
+        expect(httpResponse.statusCode).toBe(401)
     });
 
 

@@ -87,10 +87,7 @@ describe('DbAddAccount', () => {
             uuid: 'valid_uuid',
             description: 'valid_description',
         }]})
-            
     });
-
-
 
     it('Should throws if  AddAccountRepository throws', async () => {
         const {addAccountRepositoryStub, sutDbAddAccount} = makeSut()

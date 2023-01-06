@@ -18,7 +18,7 @@ export class SignInController implements Controller{
             const account = await this.signIn.login(body)
             if(!account){
                 return {
-                    statusCode: 404, 
+                    statusCode: 401, 
                 }
             }
             return {
