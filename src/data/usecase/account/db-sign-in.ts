@@ -1,16 +1,16 @@
 import { SignIn } from "../../../domain/usecase/account";
 import { SignInData } from "../../../domain/usecase/account/type";
-import { Decrypter, Encrypter, GetAccountRepository } from "./protocols";
+import { Decrypter, Encrypter, GetAccountByEmailRepository } from "./protocols";
 
 export class DbSignIn implements SignIn{
     constructor(
-        private readonly getAccountRepository: GetAccountRepository,
+        private readonly getAccountByEmailRepository: GetAccountByEmailRepository,
         private readonly decrypter: Decrypter,
-        private readonly encrypter: Encrypter
+        private readonly tokenGenerator: Encrypter
     ){}
     
     login = async (signInData: SignInData): Promise<string | null> => {
-        const account = await this.getAccountRepository.getAccount({field: 'email', value: signInData.email})
+        const account = await this.getAccountByEmailRepository.getAccountByEmail(signInData.email)
         if(!account){
             return null
         }
@@ -19,7 +19,7 @@ export class DbSignIn implements SignIn{
             return null
         }
 
-        return this.encrypter.encrypt(account.uuid)
+        return this.tokenGenerator.encrypt({userAccountId: account.uuid})
     }
 
 }

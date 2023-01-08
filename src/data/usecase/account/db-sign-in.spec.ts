@@ -1,32 +1,32 @@
 import { AccountModel } from "../../../domain/usecase/model";
-import { Decrypter, Encrypter, GetAccountRepository, GetData } from "./protocols";
+import { Decrypter, Encrypter, GetAccountByEmailRepository } from "./protocols";
 import { DbSignIn } from './db-sign-in'
 import { SignIn } from "../../../domain/usecase/account";
 import { SignInData } from "../../../domain/usecase/account/type";
 
 type TypeSut={
     sutDbSignIn: SignIn,
-    getAccountRepositorySub: GetAccountRepository,
+    getAccountByEmailRepositoryStub: GetAccountByEmailRepository,
     decrypterStub: Decrypter,
     resolvedValues: AccountModel,
-    encrypterStub: Encrypter
+    tokenGeneratorStub: Encrypter
 }
 const makeSut = (): TypeSut => {
     class DecrypterStub implements Decrypter{
         compare = (value: string, hash: string): Promise<boolean> => Promise.resolve(true)
     }
-    class EncrypterStub implements Encrypter{
+    class TokenGeneratorStub implements Encrypter{
         encrypt = (value: string): Promise<string> => Promise.resolve('encrypted_password')
     }
-    class GetAccountRepositorySub implements GetAccountRepository{
-        getAccount = (getData: GetData): Promise<AccountModel | null> => {
+    class GetAccountByEmailRepositoryStub implements GetAccountByEmailRepository{
+        getAccountByEmail = (email: string): Promise<AccountModel | null> => {
             return Promise.resolve(null)
         }
     }
     const decrypterStub = new DecrypterStub()
-    const getAccountRepositorySub = new GetAccountRepositorySub()
-    const encrypterStub = new EncrypterStub()
-    const sutDbSignIn = new DbSignIn(getAccountRepositorySub, decrypterStub, encrypterStub)
+    const getAccountByEmailRepositoryStub = new GetAccountByEmailRepositoryStub()
+    const tokenGeneratorStub = new TokenGeneratorStub()
+    const sutDbSignIn = new DbSignIn(getAccountByEmailRepositoryStub, decrypterStub, tokenGeneratorStub)
     const resolvedValues = {
         id: 1,
         uuid: 'valid_uuid',
@@ -42,30 +42,30 @@ const makeSut = (): TypeSut => {
 
     return {
         sutDbSignIn,
-        getAccountRepositorySub,
+        getAccountByEmailRepositoryStub,
         decrypterStub,
         resolvedValues,
-        encrypterStub
+        tokenGeneratorStub
     }
 }
 
 describe('SignIn data account', () => {
     it('Should call repository with correct values', async () => {
-        const {sutDbSignIn, getAccountRepositorySub }  = makeSut()
-        const getSpy = jest.spyOn(getAccountRepositorySub, 'getAccount')
+        const {sutDbSignIn, getAccountByEmailRepositoryStub }  = makeSut()
+        const getSpy = jest.spyOn(getAccountByEmailRepositoryStub, 'getAccountByEmail')
         const signInData: SignInData = {
             email: 'valid_email@email.com',
             password: 'valid_password',
         }
 
         await sutDbSignIn.login(signInData)
-        expect(getSpy).toBeCalledWith({field: 'email', value: signInData.email})       
+        expect(getSpy).toBeCalledWith(signInData.email)       
     });
 
     it('Should return null when account not found', async () => {
-        const {sutDbSignIn, getAccountRepositorySub }  = makeSut()
+        const {sutDbSignIn, getAccountByEmailRepositoryStub }  = makeSut()
 
-        jest.spyOn(getAccountRepositorySub, 'getAccount').mockResolvedValue(null)
+        jest.spyOn(getAccountByEmailRepositoryStub, 'getAccountByEmail').mockResolvedValue(null)
         const signInData: SignInData = {
             email: 'valid_email@email.com',
             password: 'valid_password',
@@ -75,8 +75,8 @@ describe('SignIn data account', () => {
     });
 
     it('Should call decrypter with correct values', async () => {
-        const {sutDbSignIn, decrypterStub, getAccountRepositorySub, resolvedValues }  = makeSut()
-        jest.spyOn(getAccountRepositorySub, 'getAccount').mockResolvedValue(resolvedValues)
+        const {sutDbSignIn, decrypterStub, getAccountByEmailRepositoryStub, resolvedValues }  = makeSut()
+        jest.spyOn(getAccountByEmailRepositoryStub, 'getAccountByEmail').mockResolvedValue(resolvedValues)
 
         const compareSpy = jest.spyOn(decrypterStub, 'compare')
         const signInData: SignInData = {
@@ -88,8 +88,8 @@ describe('SignIn data account', () => {
     });
 
     it('Should null when pasword is not correct', async () => {
-        const {sutDbSignIn, getAccountRepositorySub, decrypterStub, resolvedValues }  = makeSut()
-        jest.spyOn(getAccountRepositorySub, 'getAccount').mockResolvedValue(resolvedValues)
+        const {sutDbSignIn, getAccountByEmailRepositoryStub, decrypterStub, resolvedValues }  = makeSut()
+        jest.spyOn(getAccountByEmailRepositoryStub, 'getAccountByEmail').mockResolvedValue(resolvedValues)
         jest.spyOn(decrypterStub, 'compare').mockResolvedValue(false)
         const signInData: SignInData = {
             email: 'valid_email@email.com',
@@ -101,10 +101,10 @@ describe('SignIn data account', () => {
 
 
     it('Should a valid token when email and pasword are correct', async () => {
-        const {sutDbSignIn, getAccountRepositorySub, decrypterStub, encrypterStub, resolvedValues }  = makeSut()
-        jest.spyOn(getAccountRepositorySub, 'getAccount').mockResolvedValue(resolvedValues)
+        const {sutDbSignIn, getAccountByEmailRepositoryStub, decrypterStub, tokenGeneratorStub, resolvedValues }  = makeSut()
+        jest.spyOn(getAccountByEmailRepositoryStub, 'getAccountByEmail').mockResolvedValue(resolvedValues)
         jest.spyOn(decrypterStub, 'compare').mockResolvedValue(true)
-        const encryptSpy = jest.spyOn(encrypterStub, 'encrypt')
+        const encryptSpy = jest.spyOn(tokenGeneratorStub, 'encrypt')
 
         const signInData: SignInData = {
             email: 'valid_email@email.com',

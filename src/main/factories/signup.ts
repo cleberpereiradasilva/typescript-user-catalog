@@ -1,7 +1,7 @@
 import { DbAddAccount } from "../../data/usecase/account/db-add-account";
 import { AddAccountAdapter } from "../../external/db/typeorm/account-repository/add-account-adapter";
 import { AppDataSource } from "../../external/db/typeorm/db";
-import { BcrypterAdapter } from "../../external/encrypter/bcrypter-adapter";
+import { BcrypterAdapter } from "../../external/encrypter/bcrypt/bcrypter-adapter";
 import { ZodEmailAdapter, PasswordAdapter } from "../../external/validator";
 import { SignupController } from "../../presentation/controller/account/signup-controller";
 import { Controller } from "../../presentation/controller/protocols/interface";
