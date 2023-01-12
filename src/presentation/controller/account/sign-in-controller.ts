@@ -4,7 +4,9 @@ import { Controller } from "../protocols/interface";
 import { HttpRequest, HttpResponse } from "../protocols/types";
 
 export class SignInController implements Controller{
-    constructor(private readonly signIn: SignIn){}
+    constructor(private readonly signIn: SignIn){
+        
+    }
     
     async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
         try{

@@ -2,18 +2,18 @@ import { HttpResponse } from "../../protocols/types"
 
 export const httpBadRequest = (message: string): Promise<HttpResponse> => Promise.resolve({
         statusCode: 400, 
-        body: message,
+        body:  { message },
 })
 
 export const httpMissingParameter = (message: string): Promise<HttpResponse> => Promise.resolve({
         statusCode: 400, 
-        body: `Parameter '${message}' is required`,
+        body: {message: `Parameter '${message}' is required`},
 })
 
 
 export const httpUnAuthorized = (): Promise<HttpResponse> => Promise.resolve({
         statusCode: 401, 
-        body: `Access not Authorized`,
+        body:  {message: `Access not Authorized` },
 })
 
 

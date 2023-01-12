@@ -32,9 +32,9 @@ export class SignupController implements Controller{
                 return httpBadRequest(`Parameter 'password' is invalid`)
             }
 
-            const {name, email, password} = body
+            const {name, email, password, group} = body
 
-            const account = await this.addAccount.add({name, email, password})
+            const account = await this.addAccount.add({name, email, password, group})
 
             return httpResponseOk(account)
         }catch(error){

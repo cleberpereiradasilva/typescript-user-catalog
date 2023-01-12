@@ -1,4 +1,5 @@
-import { DataSource } from "typeorm";
+import { faker } from "@faker-js/faker";
+import { DataSource, EntityMetadataNotFoundError } from "typeorm";
 import { AccountData } from "../../../../domain/usecase/account/type";
 import { AppDataSource } from "../db/jest-pg-data-source";
 import { Account } from "../entity/account";
@@ -7,11 +8,10 @@ import { AddAccountAdapter } from "./add-account-adapter";
 import { AddGroupAdapter } from "./add-group-adapter";
 import { GetAccountAdapter } from "./get-account-adapter";
 
-
 const accountData: AccountData = {
-    name: 'valid_name',
-    email: 'valid_email_b@mail.com',
-    password:  'valid_password_1Q#', 
+    name: faker.name.firstName(),
+    email: faker.internet.email(),
+    password:  faker.internet.password()
 }
 
 describe('GetAccount Repository', () => {
@@ -34,16 +34,23 @@ describe('GetAccount Repository', () => {
         await sutAddAccountAdapter.insert(accountData);
 
         const sutGetAccountAdapter = new GetAccountAdapter(connection)
-        const accountByEmail = await sutGetAccountAdapter.getAccountByEmail('valid_email_b@mail.com')
+        const accountByEmail = await sutGetAccountAdapter.getAccountByEmail(accountData.email)
         expect(accountByEmail?.id).toBeTruthy()
     });
 
 
     it('should throw if Data Base throw', async () => {
-        jest.spyOn(connection.getRepository(Account), 'findOneBy').mockImplementationOnce(() => Promise.reject(new Error()))
+        jest.spyOn(connection.getRepository(Account), 'findOne').mockImplementationOnce(() =>  Promise.reject(new Error()) )
         const sutGetAccountAdapter = new GetAccountAdapter(connection)
-        const accountByEmail =  sutGetAccountAdapter.getAccountByEmail('valid_email_b@mail.com')
-        await expect(accountByEmail).rejects.toThrow()
-        
+        const accountByEmail =  sutGetAccountAdapter.getAccountByEmail(accountData.email)
+        expect(await accountByEmail).toEqual(new Error())
+    });
+
+
+    it('should throw if Data Base throw with instance EntityMetadataNotFoundError return', async () => {
+        jest.spyOn(connection.getRepository(Account), 'findOne').mockImplementationOnce(() =>  Promise.reject(new EntityMetadataNotFoundError(Account)) )
+        const sutGetAccountAdapter = new GetAccountAdapter(connection)
+        const accountByEmail =  await sutGetAccountAdapter.getAccountByEmail(accountData.email)
+        expect(accountByEmail).not.toBeTruthy()
     });
 });

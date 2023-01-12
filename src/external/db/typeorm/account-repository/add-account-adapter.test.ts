@@ -1,3 +1,4 @@
+import { faker } from "@faker-js/faker";
 import { DataSource } from "typeorm";
 import { AccountData } from "../../../../domain/usecase/account/type";
 import { AppDataSource } from "../db/jest-pg-data-source";
@@ -7,9 +8,9 @@ import { AddAccountAdapter } from "./add-account-adapter";
 import { AddGroupAdapter } from "./add-group-adapter";
 
 const accountData: AccountData = {
-    name: 'valid_name',
-    email: 'valid_email@mail.com',
-    password:  'valid_password_1Q#', 
+    name: faker.name.firstName(),
+    email: faker.internet.email(),
+    password:  faker.internet.password()
 }
 
 describe('AddAccount Repository', () => {
@@ -40,9 +41,7 @@ describe('AddAccount Repository', () => {
     it('should throw if Data Base throw', async () => {
         const sutAddAccountAdapter = new AddAccountAdapter(connection)
         jest.spyOn(connection.getRepository(Account), "save").mockImplementationOnce(() => Promise.reject(new Error()))
-
         const newAccount = sutAddAccountAdapter.insert(accountData);
         await expect(newAccount).rejects.toThrow()
-        
     });
 });
