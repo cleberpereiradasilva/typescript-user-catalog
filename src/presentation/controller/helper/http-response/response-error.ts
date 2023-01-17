@@ -16,6 +16,13 @@ export const httpUnAuthorized = (): Promise<HttpResponse> => Promise.resolve({
         body:  {message: `Access not Authorized` },
 })
 
+export const httpForbidden = (): Promise<HttpResponse> => Promise.resolve({
+        statusCode: 403, 
+        body:  {message: `Forbidden Access` },
+})
+
+
+
 
 export const httpServerError = (message?: string | Error): Promise<HttpResponse> => Promise.resolve({
         statusCode: 500, 
