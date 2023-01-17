@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt'
-import { Decrypter, Encrypter } from "../../../data/usecase/account/protocols";
+import { Compare, Encrypter } from "../../../data/usecase/account/protocols";
 
-export class BcrypterAdapter implements Encrypter, Decrypter{
+export class BcrypterAdapter implements Encrypter, Compare{
     encrypt = (value: string): Promise<string> =>{
         return bcrypt.hash(value, 12)
     }

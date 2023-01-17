@@ -1,6 +1,5 @@
 import { SignIn } from '../../../domain/usecase/account';
 import { SignInData } from '../../../domain/usecase/account/type';
-import { AccountModel } from '../../../domain/usecase/model';
 import { httpMissingParameter } from '../helper/http-response';
 import { HttpRequest } from '../protocols/types';
 import { SignInController } from './sign-in-controller'
