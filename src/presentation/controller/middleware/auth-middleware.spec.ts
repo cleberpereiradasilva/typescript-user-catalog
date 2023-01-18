@@ -1,4 +1,4 @@
-import { httpForbidden, httpResponseOk } from '../helper/http-response';
+import { httpForbidden, httpResponseOk, httpServerError } from '../helper/http-response';
 import { AuthMiddleware } from './auth-middleware'
 import { GetAccountByToken } from '../../../domain/usecase/account'
 import { AccountModel } from '../../../domain/usecase/model';
@@ -22,7 +22,7 @@ const makeFakeAccount = (): AccountModel => ({
 const makeSut = (): SutTypes => {
     class GetAccountByTokenStub implements GetAccountByToken{
         getAccount = async (token: string): Promise<AccountModel> => {
-            return Promise.resolve(makeFakeAccount())
+            return await Promise.resolve(makeFakeAccount())
         }
     }
 
@@ -66,6 +66,31 @@ describe('Auth Middleware', () => {
         }
         const response = await sutAuthMiddleware.handle(httpRequest)
         expect(response).toEqual(await httpForbidden())
+    });
+
+    it('should return httpResponseOk(AccountModel) when find a account', async () => {
+        const { sutAuthMiddleware } = makeSut()
+        const httpRequest = {
+            headers: {
+                'x-access-token': 'in_valid_token'
+            }
+        }
+        const response = await sutAuthMiddleware.handle(httpRequest)
+        expect(response).toEqual(await httpResponseOk(makeFakeAccount()))
+    });
+
+
+    it('should return a error 500 when getAccountByToken throw', async () => {
+        const { sutAuthMiddleware, getAccountByTokenStub } = makeSut()
+        jest.spyOn(getAccountByTokenStub, 'getAccount').mockRejectedValueOnce(httpServerError())
+        const httpRequest = {
+            headers: {
+                'x-access-token': 'in_valid_token'
+            }
+        }
+        const response = await sutAuthMiddleware.handle(httpRequest)
+        expect(response).toEqual(await httpServerError())
+        expect(response.statusCode).toBe(500)
     });
 
 });
