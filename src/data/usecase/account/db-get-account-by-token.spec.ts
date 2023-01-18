@@ -80,4 +80,20 @@ describe('DbGetAccountByToken', () => {
         const response = await sut.getAccount('valid_token')
         expect(response).toEqual(makeFakeAccount())
     });
+
+    it('should throw if DbGetAccountByTokenRepository throw', async () => {
+        const { sut, dbGetAccountByTokenRepositoryStub } = makeSut()
+        jest.spyOn(dbGetAccountByTokenRepositoryStub, 'getAccountByToken').mockImplementationOnce(() => new Promise((resolve, reject) => reject(new Error())))
+        const response = sut.getAccount('valid_token')
+        await expect(response).rejects.toThrow()
+    });
+
+    it('should throw if Decrypter throw', async () => {
+        const { sut, decrypterStub } = makeSut()
+        jest.spyOn(decrypterStub, 'descrypt').mockImplementationOnce(() => new Promise((resolve, reject) => reject(new Error())))
+        const response = sut.getAccount('valid_token')
+        await expect(response).rejects.toThrow()
+    });
+
+
 });
