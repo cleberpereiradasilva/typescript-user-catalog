@@ -6,7 +6,7 @@ import { Account } from "../entity/account";
 import { Group } from "../entity/group";
 import { AddAccountAdapter } from "./add-account-adapter";
 import { AddGroupAdapter } from "./add-group-adapter";
-import { GetAccountAdapter } from "./get-account-adapter";
+import { GetAccountByEmaiAdapter } from "./get-account-by-email-adapter";
 
 const accountData: AccountData = {
     name: faker.name.firstName(),
@@ -33,7 +33,7 @@ describe('GetAccount Repository', () => {
         accountData.group = newGroup || undefined
         await sutAddAccountAdapter.insert(accountData);
 
-        const sutGetAccountAdapter = new GetAccountAdapter(connection)
+        const sutGetAccountAdapter = new GetAccountByEmaiAdapter(connection)
         const accountByEmail = await sutGetAccountAdapter.getAccountByEmail(accountData.email)
         expect(accountByEmail?.id).toBeTruthy()
     });
@@ -41,7 +41,7 @@ describe('GetAccount Repository', () => {
 
     it('should throw if Data Base throw', async () => {
         jest.spyOn(connection.getRepository(Account), 'findOne').mockImplementationOnce(() =>  Promise.reject(new Error()) )
-        const sutGetAccountAdapter = new GetAccountAdapter(connection)
+        const sutGetAccountAdapter = new GetAccountByEmaiAdapter(connection)
         const accountByEmail =  sutGetAccountAdapter.getAccountByEmail(accountData.email)
         expect(await accountByEmail).toEqual(new Error())
     });
@@ -49,7 +49,7 @@ describe('GetAccount Repository', () => {
 
     it('should throw if Data Base throw with instance EntityMetadataNotFoundError return', async () => {
         jest.spyOn(connection.getRepository(Account), 'findOne').mockImplementationOnce(() =>  Promise.reject(new EntityMetadataNotFoundError(Account)) )
-        const sutGetAccountAdapter = new GetAccountAdapter(connection)
+        const sutGetAccountAdapter = new GetAccountByEmaiAdapter(connection)
         const accountByEmail =  await sutGetAccountAdapter.getAccountByEmail(accountData.email)
         expect(accountByEmail).not.toBeTruthy()
     });

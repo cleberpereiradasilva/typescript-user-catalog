@@ -1,6 +1,6 @@
 require('dotenv').config();
 import { DbSignIn } from "../../data/usecase/account/db-sign-in";
-import { GetAccountAdapter } from "../../external/db/typeorm/account-repository/get-account-adapter";
+import { GetAccountByEmaiAdapter } from "../../external/db/typeorm/account-repository/get-account-by-email-adapter";
 import { AppDataSource } from "../../external/db/typeorm/db";
 import { BcrypterAdapter } from "../../external/encrypter/bcrypt/bcrypter-adapter";
 import { JwtAdapter } from "../../external/encrypter/jwt/jwt-adapter";
@@ -9,7 +9,7 @@ import { Controller } from "../../presentation/controller/protocols/interface";
 
 
 export const makeSignInController = (): Controller => {
-    const getAccountByEmailRepository = new GetAccountAdapter(AppDataSource.manager.connection)
+    const getAccountByEmailRepository = new GetAccountByEmaiAdapter(AppDataSource.manager.connection)
     const encrypter = new BcrypterAdapter()
     const tokenGenerator = new JwtAdapter(process.env.SWT_TOKEN)
     const signIn = new DbSignIn(getAccountByEmailRepository, encrypter, tokenGenerator)
