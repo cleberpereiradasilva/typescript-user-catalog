@@ -1,6 +1,6 @@
 import { AccountModel } from '../../../domain/usecase/model';
 import { DbGetAccountByToken } from './db-get-account-by-token'
-import { Decrypter, GetAccountByTokenRepository } from './protocols';
+import { Decrypter, GetAccountByIdRepository } from './protocols';
 
 
 const makeFakeAccount = (): AccountModel => ({
@@ -20,28 +20,28 @@ const makeFakeAccount = (): AccountModel => ({
 type SutType = {
     sut: DbGetAccountByToken,
     decrypterStub: Decrypter,
-    dbGetAccountByTokenRepositoryStub: GetAccountByTokenRepository
+    getAccountByIdStub: GetAccountByIdRepository
 }
 
 const makeSut = (): SutType => {
     class DecrypterStub implements Decrypter{
-        descrypt = async (hash: string): Promise<Object> => {
-            return Promise.resolve('valid_decrypted')
+        descrypt = async (hash: string): Promise<{id: number}> => {
+            return Promise.resolve({id: 1})
         }
     }
-    class GetAccountByTokenStub implements GetAccountByTokenRepository{
-        getAccountByToken = async (token: string): Promise<AccountModel> => {
+    class GetAccountByIdStub implements GetAccountByIdRepository{
+        getAccountById = async (id: number): Promise<AccountModel> => {
             return Promise.resolve(makeFakeAccount())
         }
     }
 
     const decrypterStub = new DecrypterStub()
-    const dbGetAccountByTokenRepositoryStub = new GetAccountByTokenStub()
-    const sut = new DbGetAccountByToken(decrypterStub, dbGetAccountByTokenRepositoryStub)
+    const getAccountByIdStub = new GetAccountByIdStub()
+    const sut = new DbGetAccountByToken(decrypterStub, getAccountByIdStub)
     return {
         sut,
         decrypterStub,
-        dbGetAccountByTokenRepositoryStub
+        getAccountByIdStub
     }
 }
 
@@ -62,15 +62,15 @@ describe('DbGetAccountByToken', () => {
     });
 
     it('should call DbGetAccountByTokenRepository with correct value', async () => {
-        const { sut, dbGetAccountByTokenRepositoryStub } = makeSut()
-        const getByTokenSpy = jest.spyOn(dbGetAccountByTokenRepositoryStub, 'getAccountByToken')
+        const { sut, getAccountByIdStub } = makeSut()
+        const getByTokenSpy = jest.spyOn(getAccountByIdStub, 'getAccountById')
         await sut.getAccount('valid_token')
-        expect(getByTokenSpy).toBeCalledWith('valid_token')
+        expect(getByTokenSpy).toBeCalledWith(1)
     });
 
     it('should return null if DbGetAccountByTokenRepository return null', async () => {
-        const { sut, dbGetAccountByTokenRepositoryStub } = makeSut()
-        jest.spyOn(dbGetAccountByTokenRepositoryStub, 'getAccountByToken').mockResolvedValue(Promise.resolve(null))
+        const { sut, getAccountByIdStub } = makeSut()
+        jest.spyOn(getAccountByIdStub, 'getAccountById').mockResolvedValue(Promise.resolve(null))
         const response = await sut.getAccount('valid_token')
         expect(response).toBeNull()
     });
@@ -82,8 +82,8 @@ describe('DbGetAccountByToken', () => {
     });
 
     it('should throw if DbGetAccountByTokenRepository throw', async () => {
-        const { sut, dbGetAccountByTokenRepositoryStub } = makeSut()
-        jest.spyOn(dbGetAccountByTokenRepositoryStub, 'getAccountByToken').mockImplementationOnce(() => new Promise((resolve, reject) => reject(new Error())))
+        const { sut, getAccountByIdStub } = makeSut()
+        jest.spyOn(getAccountByIdStub, 'getAccountById').mockImplementationOnce(() => new Promise((resolve, reject) => reject(new Error())))
         const response = sut.getAccount('valid_token')
         await expect(response).rejects.toThrow()
     });
