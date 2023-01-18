@@ -29,14 +29,11 @@ const makeSut = (): SutType => {
             return Promise.resolve('valid_decrypted')
         }
     }
-
     class GetAccountByTokenStub implements GetAccountByTokenRepository{
         getAccountByToken = async (token: string): Promise<AccountModel> => {
             return Promise.resolve(makeFakeAccount())
         }
     }
-
-
 
     const decrypterStub = new DecrypterStub()
     const dbGetAccountByTokenRepositoryStub = new GetAccountByTokenStub()
@@ -71,11 +68,16 @@ describe('DbGetAccountByToken', () => {
         expect(getByTokenSpy).toBeCalledWith('valid_token')
     });
 
-
     it('should return null if DbGetAccountByTokenRepository return null', async () => {
         const { sut, dbGetAccountByTokenRepositoryStub } = makeSut()
         jest.spyOn(dbGetAccountByTokenRepositoryStub, 'getAccountByToken').mockResolvedValue(Promise.resolve(null))
         const response = await sut.getAccount('valid_token')
         expect(response).toBeNull()
+    });
+
+    it('should return a AccountModel on success', async () => {
+        const { sut } = makeSut()
+        const response = await sut.getAccount('valid_token')
+        expect(response).toEqual(makeFakeAccount())
     });
 });
