@@ -28,7 +28,7 @@ describe('AddAccount Repository', () => {
     it('should insert a account in database', async () => {
         const sutAddAccountAdapter = new AddAccountAdapter(connection)
         const sutAddGroupAdapter = new AddGroupAdapter(connection)
-        const newGroup = await sutAddGroupAdapter.insert({description: 'group with valid namegroup'});
+        const newGroup = await sutAddGroupAdapter.insert({description: faker.commerce.department()});
         accountData.group = newGroup || undefined
         const newAccount = await sutAddAccountAdapter.insert(accountData);
         expect(newAccount?.id).toBeTruthy()

@@ -10,7 +10,7 @@ export class AddAccountAdapter implements AddAccountRepository{
     constructor(connection: DataSource){
         this.repository =  connection.getRepository(Account);
     }
-    insert = async (account: AccountData): Promise<AccountModel | null> => {
+    insert = async (account: AccountData): Promise<AccountModel> => {
         const {group, ...accountData} = account
         const newAccount = this.repository.create({...accountData})
         const groups = [group as unknown as Group]

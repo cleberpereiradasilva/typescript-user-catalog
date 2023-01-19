@@ -14,7 +14,7 @@ const accountData: AccountData = {
     password:  faker.internet.password()
 }
 
-describe('GetAccount Repository', () => {
+describe('GetAccount Repository by email', () => {
     let connection: DataSource;
     beforeAll(async () => {
         connection = await AppDataSource.initialize()
@@ -29,13 +29,13 @@ describe('GetAccount Repository', () => {
     it('should get a account in database using email', async () => {
         const sutAddAccountAdapter = new AddAccountAdapter(connection)
         const sutAddGroupAdapter = new AddGroupAdapter(connection)
-        const newGroup = await sutAddGroupAdapter.insert({description: 'group with valid namegroup b'});
+        const newGroup = await sutAddGroupAdapter.insert({description: faker.commerce.department()});
         accountData.group = newGroup || undefined
         await sutAddAccountAdapter.insert(accountData);
 
         const sutGetAccountAdapter = new GetAccountByEmaiAdapter(connection)
         const accountByEmail = await sutGetAccountAdapter.getAccountByEmail(accountData.email)
-        expect(accountByEmail?.id).toBeTruthy()
+        expect(accountByEmail.id).toBeTruthy()
     });
 
 
