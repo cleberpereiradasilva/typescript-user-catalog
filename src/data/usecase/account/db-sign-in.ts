@@ -19,7 +19,7 @@ export class DbSignIn implements SignIn{
             return null
         }
 
-        return this.tokenGenerator.encrypt({userAccountId: account.uuid})
+        return this.tokenGenerator.encrypt({userAccountId: account.id})
     }
 
 }

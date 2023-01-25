@@ -27,7 +27,7 @@ describe('Bcrypter Adapter', () => {
     });
 
 
-    it('should throw if bcrypter throw', async () => {
+    it('should throw if bcrypter throw when encrypt', async () => {
         const sutJwtAdapter = makeJwtAdapter();
         jest.spyOn(jwt, 'sign').mockImplementationOnce(() => Promise.reject(new Error()))
 
@@ -35,6 +35,22 @@ describe('Bcrypter Adapter', () => {
 
         await expect(resultThrow).rejects.toThrow()
         
+    });
+
+
+    it('should decrypt with correct value', async () => {
+        const sutJwtAdapter = makeJwtAdapter();
+        jest.spyOn(jwt, 'verify').mockImplementationOnce(() => ({id: 1}))
+        const resultDecrypted = await sutJwtAdapter.descrypt('any_payload');
+        expect(resultDecrypted).toEqual({id: 1})
+        
+    });
+
+    it('should throw if bcrypter throw when decrypt', async () => {
+        const sutJwtAdapter = makeJwtAdapter();
+        jest.spyOn(jwt, 'verify').mockImplementationOnce(() => { throw new Error() })
+        const resultThrow = await sutJwtAdapter.descrypt('any_payload');
+        expect(resultThrow).toBeNull()
     });
    
 

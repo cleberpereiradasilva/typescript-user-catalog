@@ -9,7 +9,7 @@ export class DbGetAccountByToken implements GetAccountByToken{
     getAccount = async (token: string):Promise<AccountModel> => {
         const tokenObject = await this.decrypter.descrypt(token)
         if(tokenObject){
-            const account = this.dbGetAccountByIdRepository.getAccountById(tokenObject.id)
+            const account = await this.dbGetAccountByIdRepository.getAccountById(tokenObject.userAccountId)
             if(account){
                 return account
             }

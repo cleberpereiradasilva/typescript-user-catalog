@@ -25,8 +25,8 @@ type SutType = {
 
 const makeSut = (): SutType => {
     class DecrypterStub implements Decrypter{
-        descrypt = async (hash: string): Promise<{id: number}> => {
-            return Promise.resolve({id: 1})
+        descrypt = async (hash: string): Promise<{userAccountId: number}> => {
+            return Promise.resolve({userAccountId: 1})
         }
     }
     class GetAccountByIdStub implements GetAccountByIdRepository{

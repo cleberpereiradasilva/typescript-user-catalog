@@ -1,4 +1,4 @@
-import { Express, NextFunction, Request, Response } from "express"
+import { Express } from "express"
 import { routeAdapter } from "../../../../main/adapters/route-adapter"
 import { makeSignInController } from "../../../../main/factories/sign-in"
 

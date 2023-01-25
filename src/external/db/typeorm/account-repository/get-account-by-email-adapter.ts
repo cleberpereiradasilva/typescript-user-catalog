@@ -3,7 +3,7 @@ import { GetAccountByEmailRepository } from "../../../../data/usecase/account/pr
 import { AccountModel } from "../../../../domain/usecase/model";
 import { Account } from "../entity/account";
 
-export class GetAccountByEmaiAdapter implements GetAccountByEmailRepository{
+export class GetAccountByEmailAdapter implements GetAccountByEmailRepository{
     private repository: Repository<Account>;
     constructor(private readonly connection: DataSource){
         this.repository =  this.connection.getRepository(Account);
