@@ -18,8 +18,13 @@ import { GetAccountByEmailAdapter } from '../../../db/typeorm/account-repository
 import { JwtAdapter } from '../../../encrypter/jwt/jwt-adapter';
 import { DbSignIn } from '../../../../data/usecase/account/db-sign-in';
 import { SignInController } from '../../../../presentation/controller/account/sign-in-controller';
+import { GetAccountByToken } from '../../../../domain/usecase/account';
+import { RoleModel } from '../../../../domain/usecase/model';
 
 class AuthMiddleware implements Controller{
+    constructor(
+        private readonly getAccountByToken: GetAccountByToken,
+        private readonly roles: RoleModel[]){}
     handle(httpRequest: HttpRequest): Promise<HttpResponse> {
         return httpResponseOk('')
     }
@@ -60,7 +65,6 @@ describe('AddGroup route test', () => {
                 confirmation: fakePassword
             }
         }
-        
 
         const validatorEmail = new ZodEmailAdapter()
         const validatorPassword = new PasswordAdapter()

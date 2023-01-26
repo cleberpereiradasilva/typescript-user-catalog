@@ -1,4 +1,5 @@
 export * from './add-account'
 export * from './add-group'
 export * from './sign-in'
+export * from './add-role'
 export * from './get-account-by-token'

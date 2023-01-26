@@ -1,3 +1,4 @@
+import { faker } from "@faker-js/faker";
 import { DataSource } from "typeorm";
 import { GroupData } from "../../../../domain/usecase/account/type";
 import { AppDataSource } from "../db/jest-pg-data-source";
@@ -20,7 +21,7 @@ describe('Add User Group Repository', () => {
     it('should insert a account group in database', async () => {
         const sutAddGroupAdapter = new AddGroupAdapter(connection)
         const groupData: GroupData = {
-            description: 'valid_description_a',
+            description: faker.commerce.department(),
         }
         const newGroup = await sutAddGroupAdapter.insert(groupData);
         expect(newGroup?.id).toBeTruthy()
@@ -32,7 +33,7 @@ describe('Add User Group Repository', () => {
         const sutAddGroupAdapter = new AddGroupAdapter(connection)
         jest.spyOn(connection.getRepository(Group), "save").mockImplementationOnce(() => Promise.reject(new Error()))
         const groupData: GroupData = {
-            description: 'valid_description_b',
+            description: faker.commerce.department(),
         }
         const newGroup = sutAddGroupAdapter.insert(groupData);
         await expect(newGroup).rejects.toThrow()

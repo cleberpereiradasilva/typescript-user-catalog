@@ -8,10 +8,10 @@
     "build": "rimraf ./dist && tsc",
     "start": "node ./dist/src/index.js",
     "test": "jest --passWithNoTests",
-    "test:integration": "npm test --  -c jest-integration.config.js --detectOpenHandles",
+    "test:integration": "npm test --  -c jest-integration.config.js --detectOpenHandles --runInBand",
     "test:unit": "npm test --  -c jest-unit.config.js",
-    "test:watch": "npm test -- --watchAll",
-    "test:ci": "npm test -- --coverage"
+    "test:watch": "npm test -- --watchAll --runInBand",
+    "test:ci": "npm test -- --coverage --runInBand"
   },
   "keywords": [],
   "author": "",

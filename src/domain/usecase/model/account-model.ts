@@ -1,4 +1,4 @@
-import { Group } from "../../../external/db/typeorm/entity/group";
+import { GroupModel } from './group-model'
 
 export interface AccountModel{
     id: number;
@@ -6,5 +6,5 @@ export interface AccountModel{
     name: string;
     email: string;
     password: string; 
-    groups: Group[]
+    groups: GroupModel[]
 }

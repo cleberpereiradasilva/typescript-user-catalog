@@ -9,7 +9,7 @@ export class AddGroupAdapter implements AddGroupRepository{
     constructor(connection: DataSource){
         this.repository =  connection.getRepository(Group);
     }
-    insert = async (group: GroupData): Promise<GroupModel | null> => {
+    insert = async (group: GroupData): Promise<GroupModel> => {
         const newGroup = this.repository.create({...group})
         const insertedGroup = await this.repository.save(newGroup)
         const groupModel: GroupModel = {...insertedGroup}
