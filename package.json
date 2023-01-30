@@ -8,10 +8,12 @@
     "build": "rimraf ./dist && tsc",
     "start": "node ./dist/src/index.js",
     "test": "jest --passWithNoTests",
-    "test:integration": "npm test --  -c jest-integration.config.js --detectOpenHandles --runInBand",
+    "remove:sqlite": "rimraf ./database.sqlite",
+    "test:integration": "npm run remove:sqlite && npm test --  -c jest-integration.config.js --detectOpenHandles",
     "test:unit": "npm test --  -c jest-unit.config.js",
     "test:watch": "npm test -- --watchAll --runInBand",
-    "test:ci": "npm test -- --coverage --runInBand"
+    "test:ci": "npm run remove:sqlite && npm test -- --coverage",
+    "sonar:report": "ts-node sonar-scanner.ts"
   },
   "keywords": [],
   "author": "",

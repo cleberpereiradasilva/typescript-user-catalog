@@ -1,6 +1,6 @@
 import { DataSource } from "typeorm";
 import { RoleData } from "../../../../domain/usecase/account/type";
-import { AppDataSource } from "../db/jest-pg-data-source";
+import { AppDataSource } from "../db/sqlite-data-source";
 import { Role } from "../entity/role";
 import { AddRoleAdapter } from "./add-role-adapter";
 

@@ -2,7 +2,7 @@ import { faker } from "@faker-js/faker";
 import { DataSource } from "typeorm";
 import { GroupData, RoleData } from "../../../../domain/usecase/account/type";
 import { GroupModel, RoleModel } from "../../../../domain/usecase/model";
-import { AppDataSource } from "../db/jest-pg-data-source";
+import { AppDataSource } from "../db/sqlite-data-source";
 import { Group } from "../entity/group";
 import { Role } from "../entity/role";
 import { AddGroupAdapter } from "./add-group-adapter";

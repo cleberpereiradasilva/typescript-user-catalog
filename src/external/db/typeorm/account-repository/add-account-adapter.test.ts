@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { DataSource } from "typeorm";
 import { AccountData } from "../../../../domain/usecase/account/type";
-import { AppDataSource } from "../db/jest-pg-data-source";
+import { AppDataSource } from "../db/sqlite-data-source";
 import { Account } from "../entity/account";
 import { Group } from "../entity/group";
 import { AddAccountAdapter } from "./add-account-adapter";

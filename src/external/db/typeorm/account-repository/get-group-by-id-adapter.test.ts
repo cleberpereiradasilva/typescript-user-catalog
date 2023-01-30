@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { DataSource, EntityMetadataNotFoundError } from "typeorm";
 import { GroupData } from "../../../../domain/usecase/account/type";
-import { AppDataSource } from "../db/jest-pg-data-source";
+import { AppDataSource } from "../db/sqlite-data-source";
 import { Group } from "../entity/group";
 import { GetGroupByIdAdapter } from "./get-group-by-id-adapter";
 import { AddGroupAdapter } from "./add-group-adapter";

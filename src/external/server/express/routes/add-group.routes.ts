@@ -5,6 +5,6 @@ import { makeAddGroupController } from "../../../../main/factories/group"
 
 export default (app: Express): void => {
     const addGroupController = makeAddGroupController()
-    const authMiddleware = makeAuthenticator()
+    const authMiddleware = makeAuthenticator(['admin', 'manager'])
     app.post('/user-group', authMiddleware, routeAdapter(addGroupController))
 }
