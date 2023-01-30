@@ -4,7 +4,7 @@ import { Controller } from '../../../../presentation/controller/protocols/interf
 import { HttpRequest, HttpResponse } from '../../../../presentation/controller/protocols/types';
 import { httpResponseOk } from '../../../../presentation/controller/helper/http-response';
 import { DataSource } from 'typeorm';
-import { AppDataSource } from '../../../db/typeorm/db/jest-pg-data-source'
+import { AppDataSource } from '../../../db/typeorm/db/sqlite-data-source'
 import { Account } from '../../../db/typeorm/entity/account';
 import { Group } from '../../../db/typeorm/entity/group';
 import { AddAccountAdapter } from '../../../db/typeorm/account-repository/add-account-adapter';
